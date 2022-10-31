@@ -164,3 +164,4 @@ ethereum.on('chainChanged', (chainId) => {
 ## 项目部署
 
 项目在 Apache 或 IIS 等 Web 服务中部署，打开浏览器访问。界面如下：
+![](./assets/images/ethereum-connect-metamask.png)
