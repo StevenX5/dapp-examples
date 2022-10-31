@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ethereum connect metamask</title>
+		<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+		<link href="assets/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+  <div id="container" class="text-center">
+		<h3>ethereum provider</h3>
+		<div class="row">
+			<div class="col-md-2"></div>
+			<div class="col-md-8">
+				<button type="button" id="connectMetamask" class="btn btn-default app-mb-10">connect</button>
+				<button type="button" id="showAccount" class="btn btn-default app-mb-10">account</button>
+				<button type="button" id="showChainId" class="btn btn-default app-mb-10">chain id</button>
+				<button type="button" id="showPublicKey" class="btn btn-default app-mb-10">public key</button>
+				<input type="text" id="account" class="form-control app-mb-10" placeholder="account">
+				<input type="text" id="chainId" class="form-control app-mb-10" placeholder="chain id">
+				<input type="text" id="publicKey" class="form-control app-mb-10" placeholder="public key">
+			</div>
+			<div class="col-md-2"></div>
+		</div>
+	</div>
+	
+  <!-- js -->
+	<script src="assets/js/jquery-3.3.1.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		var account = null;			//当前账号
+		var chainId = null;			//链ID
+		
+		// 激活以太坊
+		if (typeof window.ethereum === 'undefined') {
+			console.log("Please install MetaMask.");
+		}	else {
+			// app init code
+			console.log("Enable ethereum ok.");
+		}
+		
+		// 连接钱包
+		const connectMetamask = document.getElementById('connectMetamask');
+		connectMetamask.addEventListener('click', () => {
+			// 授权链接MetaMask
+			ethereum
+				.request({ method: 'eth_requestAccounts' })
+				.then(handleAccountsChanged)
+				.catch((err) => {
+					if (err.code === 4001) {
+						console.log('Please connect to MetaMask.');
+					} else {
+						console.error(err);
+					}
+				});
+		});
+		
+		// 监听钱包地址的变更
+		ethereum.on('accountsChanged', (accounts) => {
+			handleAccountsChanged(accounts);
+		});
+		
+		// 钱包地址变更的回调函数
+		function handleAccountsChanged(accounts) {
+			if (accounts.length === 0) {
+				console.log('Please connect to MetaMask.');
+			} else if (accounts[0] !== account) {
+				account = accounts[0];
+				$("#account").val(account);		//显示
+			}
+		}
+
+		// 显示链ID
+		const showChainId = document.getElementById('showChainId');
+		showChainId.addEventListener('click', () => {
+			ethereum
+				.request({ method: 'eth_chainId' })
+				.then((result) => {
+					$("#chainId").val(result);
+				});
+		});
+		
+		// 监听链的变更
+		ethereum.on('chainChanged', (chainId) => {
+			window.location.reload();		//刷新
+			// 重新链接钱包
+		});
+		
+		// 显示公钥(需要先连接钱包)
+		const showPublicKey = document.getElementById('showPublicKey');
+		showPublicKey.addEventListener('click', () => {
+			// 是否已连接
+			if (ethereum.isConnected() == false) {
+				console.log('Please connect to MetaMask.');
+				exit;
+			}
+			// 授权提供公钥
+			ethereum
+				.request({ method: 'eth_getEncryptionPublicKey', params: [account] })
+				.then((result) => {
+					$('#publicKey').val(result);
+				})
+				.catch((err) => {
+					if (err.code === 4001) {
+						console.log('Please connect to MetaMask.');
+					} else {
+						console.error(err);
+					}
+				});
+		});
+		
+		// 显示账号
+		const showAccount = document.getElementById('showAccount');
+		showAccount.addEventListener('click', () => {
+			ethereum.request({ method: 'eth_accounts' }).then((result) => {
+				$("#account").val(result);
+			});
+		});
+	</script>
+</body>
+</html>
