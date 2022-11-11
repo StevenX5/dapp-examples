@@ -1,6 +1,8 @@
 # ethereum-connect-metamask
 这是一个用 window.ethereum 接口来连接与操作 MetaMask 钱包的项目例子。运行该项目，需要先安装 MetaMask 钱包。
 
+访问 [这里](https://www.benmo.cc) 获取更多区块链资料。
+
 ## 安装 MetaMask 钱包
 [MetaMask](https://metamask.io/) 是一个浏览器插件钱包，支持火狐浏览器（[Firefox](https://www.mozilla.org/)）和谷歌浏览器（[Chrome](https://www.google.cn/intl/zh-CN/chrome/)）。安装完成后，window 对象中会出现一个 window.ethereum 的对象。
 
